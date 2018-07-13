@@ -1,5 +1,7 @@
 package com.test;
 
+import java.util.List;
+
 /**
  * Created by ban on 2018/7/12.
  */
@@ -8,6 +10,15 @@ public class User {
     private String username;
     private String password;
     private String age;
+    private List<A> list;
+
+    public List<A> getList() {
+        return list;
+    }
+
+    public void setList(List<A> list) {
+        this.list = list;
+    }
 
     public String getUsername() {
         return username;
@@ -39,6 +50,7 @@ public class User {
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", age='" + age + '\'' +
+                ", list=" + list +
                 '}';
     }
 }

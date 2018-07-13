@@ -17,8 +17,6 @@
 package com.test.yojson.internal.bind;
 
 import com.test.yojson.*;
-import com.test.yojson.annotations.JsonAdapter;
-import com.test.yojson.annotations.SerializedName;
 import com.test.yojson.internal.*;
 import com.test.yojson.internal.reflect.ReflectionAccessor;
 import com.test.yojson.reflect.TypeToken;
@@ -62,24 +60,8 @@ public final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
      * first element holds the default name
      */
     private List<String> getFieldNames(Field f) {
-        SerializedName annotation = f.getAnnotation(SerializedName.class);
-        if (annotation == null) {
-            String name = fieldNamingPolicy.translateName(f);
-            return Collections.singletonList(name);
-        }
-
-        String serializedName = annotation.value();
-        String[] alternates = annotation.alternate();
-        if (alternates.length == 0) {
-            return Collections.singletonList(serializedName);
-        }
-
-        List<String> fieldNames = new ArrayList<String>(alternates.length + 1);
-        fieldNames.add(serializedName);
-        for (String alternate : alternates) {
-            fieldNames.add(alternate);
-        }
-        return fieldNames;
+        String name = fieldNamingPolicy.translateName(f);
+        return Collections.singletonList(name);
     }
 
     @Override
@@ -99,12 +81,7 @@ public final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
             final TypeToken<?> fieldType, boolean serialize, boolean deserialize) {
         final boolean isPrimitive = Primitives.isPrimitive(fieldType.getRawType());
         // special casing primitives here saves ~5% on Android...
-        JsonAdapter annotation = field.getAnnotation(JsonAdapter.class);
         TypeAdapter<?> mapped = null;
-        if (annotation != null) {
-            mapped = jsonAdapterFactory.getTypeAdapter(
-                    constructorConstructor, context, fieldType, annotation);
-        }
         final boolean jsonAdapterPresent = mapped != null;
         if (mapped == null) {
             mapped = context.getAdapter(fieldType);

@@ -17,7 +17,6 @@
 package com.test.yojson.internal.bind;
 
 import com.test.yojson.*;
-import com.test.yojson.annotations.SerializedName;
 import com.test.yojson.internal.LazilyParsedNumber;
 import com.test.yojson.reflect.TypeToken;
 import com.test.yojson.stream.JsonReader;
@@ -755,22 +754,12 @@ public final class TypeAdapters {
     private final Map<T, String> constantToName = new HashMap<T, String>();
 
     public EnumTypeAdapter(Class<T> classOfT) {
-      try {
         for (T constant : classOfT.getEnumConstants()) {
           String name = constant.name();
-          SerializedName annotation = classOfT.getField(name).getAnnotation(SerializedName.class);
-          if (annotation != null) {
-            name = annotation.value();
-            for (String alternate : annotation.alternate()) {
-              nameToConstant.put(alternate, constant);
-            }
-          }
+
           nameToConstant.put(name, constant);
           constantToName.put(constant, name);
         }
-      } catch (NoSuchFieldException e) {
-        throw new AssertionError(e);
-      }
     }
     @Override public T read(JsonReader in) throws IOException {
       if (in.peek() == JsonToken.NULL) {

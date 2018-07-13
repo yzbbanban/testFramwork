@@ -17,9 +17,6 @@
 package com.test.yojson.internal;
 
 import com.test.yojson.*;
-import com.test.yojson.annotations.Expose;
-import com.test.yojson.annotations.Since;
-import com.test.yojson.annotations.Until;
 import com.test.yojson.reflect.TypeToken;
 import com.test.yojson.stream.JsonReader;
 import com.test.yojson.stream.JsonWriter;
@@ -27,23 +24,9 @@ import com.test.yojson.stream.JsonWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * This class selects which fields and types to omit. It is configurable,
- * supporting version attributes {@link Since} and {@link Until}, modifiers,
- * synthetic fields, anonymous and local classes, inner classes, and fields with
- * the {@link Expose} annotation.
- *
- * <p>This class is a type adapter factory; types that are excluded will be
- * adapted to null. It may delegate to another type adapter if only one
- * direction is excluded.
- *
- * @author Joel Leitch
- * @author Jesse Wilson
- */
 public final class Excluder implements TypeAdapterFactory, Cloneable {
   private static final double IGNORE_VERSIONS = -1.0d;
   public static final Excluder DEFAULT = new Excluder();
@@ -63,47 +46,11 @@ public final class Excluder implements TypeAdapterFactory, Cloneable {
     }
   }
 
-  public Excluder withVersion(double ignoreVersionsAfter) {
-    Excluder result = clone();
-    result.version = ignoreVersionsAfter;
-    return result;
-  }
 
-  public Excluder withModifiers(int... modifiers) {
-    Excluder result = clone();
-    result.modifiers = 0;
-    for (int modifier : modifiers) {
-      result.modifiers |= modifier;
-    }
-    return result;
-  }
 
-  public Excluder disableInnerClassSerialization() {
-    Excluder result = clone();
-    result.serializeInnerClasses = false;
-    return result;
-  }
 
-  public Excluder excludeFieldsWithoutExposeAnnotation() {
-    Excluder result = clone();
-    result.requireExpose = true;
-    return result;
-  }
 
-  public Excluder withExclusionStrategy(ExclusionStrategy exclusionStrategy,
-      boolean serialization, boolean deserialization) {
-    Excluder result = clone();
-    if (serialization) {
-      result.serializationStrategies = new ArrayList<ExclusionStrategy>(serializationStrategies);
-      result.serializationStrategies.add(exclusionStrategy);
-    }
-    if (deserialization) {
-      result.deserializationStrategies
-          = new ArrayList<ExclusionStrategy>(deserializationStrategies);
-      result.deserializationStrategies.add(exclusionStrategy);
-    }
-    return result;
-  }
+
   @Override
   public <T> TypeAdapter<T> create(final Gson gson, final TypeToken<T> type) {
     Class<?> rawType = type.getRawType();
@@ -150,8 +97,7 @@ public final class Excluder implements TypeAdapterFactory, Cloneable {
       return true;
     }
 
-    if (version != Excluder.IGNORE_VERSIONS
-        && !isValidVersion(field.getAnnotation(Since.class), field.getAnnotation(Until.class))) {
+    if (version != Excluder.IGNORE_VERSIONS) {
       return true;
     }
 
@@ -160,10 +106,7 @@ public final class Excluder implements TypeAdapterFactory, Cloneable {
     }
 
     if (requireExpose) {
-      Expose annotation = field.getAnnotation(Expose.class);
-      if (annotation == null || (serialize ? !annotation.serialize() : !annotation.deserialize())) {
         return true;
-      }
     }
 
     if (!serializeInnerClasses && isInnerClass(field.getType())) {
@@ -188,7 +131,7 @@ public final class Excluder implements TypeAdapterFactory, Cloneable {
   }
 
   private boolean excludeClassChecks(Class<?> clazz) {
-      if (version != Excluder.IGNORE_VERSIONS && !isValidVersion(clazz.getAnnotation(Since.class), clazz.getAnnotation(Until.class))) {
+      if (version != Excluder.IGNORE_VERSIONS ) {
           return true;
       }
 
@@ -231,27 +174,5 @@ public final class Excluder implements TypeAdapterFactory, Cloneable {
     return (clazz.getModifiers() & Modifier.STATIC) != 0;
   }
 
-  private boolean isValidVersion(Since since, Until until) {
-    return isValidSince(since) && isValidUntil(until);
-  }
 
-  private boolean isValidSince(Since annotation) {
-    if (annotation != null) {
-      double annotationVersion = annotation.value();
-      if (annotationVersion > version) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private boolean isValidUntil(Until annotation) {
-    if (annotation != null) {
-      double annotationVersion = annotation.value();
-      if (annotationVersion <= version) {
-        return false;
-      }
-    }
-    return true;
-  }
 }
