@@ -337,7 +337,7 @@ public final class Gson {
           return candidate;
         }
       }
-      throw new IllegalArgumentException("GSON (" + GsonBuildConfig.VERSION + ") cannot handle " + type);
+      throw new IllegalArgumentException("cannot handle " + type);
     } finally {
       threadCalls.remove(type);
 
@@ -407,14 +407,6 @@ public final class Gson {
     return target;
   }
 
-
-  public <T> T fromJson(Reader json, Class<T> classOfT) throws JsonSyntaxException, JsonIOException {
-    JsonReader jsonReader = newJsonReader(json);
-    Object object = fromJson(jsonReader, classOfT);
-    assertFullConsumption(object, jsonReader);
-    return Primitives.wrap(classOfT).cast(object);
-  }
-
   @SuppressWarnings("unchecked")
   public <T> T fromJson(Reader json, Type typeOfT) throws JsonIOException, JsonSyntaxException {
     JsonReader jsonReader = newJsonReader(json);
@@ -463,7 +455,7 @@ public final class Gson {
       // TODO(inder): Figure out whether it is indeed right to rethrow this as JsonSyntaxException
       throw new JsonSyntaxException(e);
     } catch (AssertionError e) {
-      throw new AssertionError("AssertionError (GSON " + GsonBuildConfig.VERSION + "): " + e.getMessage(), e);
+      throw new AssertionError("AssertionError : " + e.getMessage(), e);
     } finally {
       reader.setLenient(oldLenient);
     }

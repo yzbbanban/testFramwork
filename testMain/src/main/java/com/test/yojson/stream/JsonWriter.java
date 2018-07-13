@@ -164,11 +164,6 @@ public class JsonWriter implements Closeable, Flushable {
     push(EMPTY_DOCUMENT);
   }
 
-  /**
-   * A string containing a full set of spaces for a single level of
-   * indentation, or null for no pretty printing.
-   */
-  private String indent;
 
   /**
    * The name/value separator; either ":" or ": ".
@@ -177,7 +172,6 @@ public class JsonWriter implements Closeable, Flushable {
 
   private boolean lenient;
 
-  private boolean htmlSafe;
 
   private String deferredName;
 
@@ -292,9 +286,6 @@ public class JsonWriter implements Closeable, Flushable {
     }
 
     stackSize--;
-    if (context == nonempty) {
-      newline();
-    }
     out.write(closeBracket);
     return this;
   }
@@ -347,7 +338,6 @@ public class JsonWriter implements Closeable, Flushable {
 
   private void writeDeferredName() throws IOException {
     if (deferredName != null) {
-      beforeName();
       string(deferredName);
       deferredName = null;
     }
@@ -494,7 +484,7 @@ public class JsonWriter implements Closeable, Flushable {
   }
 
   private void string(String value) throws IOException {
-    String[] replacements = htmlSafe ? HTML_SAFE_REPLACEMENT_CHARS : REPLACEMENT_CHARS;
+    String[] replacements =  REPLACEMENT_CHARS;
     out.write("\"");
     int last = 0;
     int length = value.length();
@@ -525,31 +515,8 @@ public class JsonWriter implements Closeable, Flushable {
     out.write("\"");
   }
 
-  private void newline() throws IOException {
-    if (indent == null) {
-      return;
-    }
 
-    out.write("\n");
-    for (int i = 1, size = stackSize; i < size; i++) {
-      out.write(indent);
-    }
-  }
 
-  /**
-   * Inserts any necessary separators and whitespace before a name. Also
-   * adjusts the stack to expect the name's value.
-   */
-  private void beforeName() throws IOException {
-    int context = peek();
-    if (context == NONEMPTY_OBJECT) { // first in object
-      out.write(',');
-    } else if (context != EMPTY_OBJECT) { // not in an object!
-      throw new IllegalStateException("Nesting problem.");
-    }
-    newline();
-    replaceTop(DANGLING_NAME);
-  }
 
   /**
    * Inserts any necessary separators and whitespace before a literal value,
@@ -571,12 +538,10 @@ public class JsonWriter implements Closeable, Flushable {
 
     case EMPTY_ARRAY: // first in array
       replaceTop(NONEMPTY_ARRAY);
-      newline();
       break;
 
     case NONEMPTY_ARRAY: // another in array
       out.append(',');
-      newline();
       break;
 
     case DANGLING_NAME: // value for name
