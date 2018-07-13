@@ -61,70 +61,7 @@ public final class JsonObject extends JsonElement {
     members.put(property, value);
   }
 
-  /**
-   * Removes the {@code property} from this {@link JsonObject}.
-   *
-   * @param property name of the member that should be removed.
-   * @return the {@link JsonElement} object that is being removed.
-   * @since 1.3
-   */
-  public JsonElement remove(String property) {
-    return members.remove(property);
-  }
 
-  /**
-   * Convenience method to add a primitive member. The specified value is converted to a
-   * JsonPrimitive of String.
-   *
-   * @param property name of the member.
-   * @param value the string value associated with the member.
-   */
-  public void addProperty(String property, String value) {
-    add(property, createJsonElement(value));
-  }
-
-  /**
-   * Convenience method to add a primitive member. The specified value is converted to a
-   * JsonPrimitive of Number.
-   *
-   * @param property name of the member.
-   * @param value the number value associated with the member.
-   */
-  public void addProperty(String property, Number value) {
-    add(property, createJsonElement(value));
-  }
-
-  /**
-   * Convenience method to add a boolean member. The specified value is converted to a
-   * JsonPrimitive of Boolean.
-   *
-   * @param property name of the member.
-   * @param value the number value associated with the member.
-   */
-  public void addProperty(String property, Boolean value) {
-    add(property, createJsonElement(value));
-  }
-
-  /**
-   * Convenience method to add a char member. The specified value is converted to a
-   * JsonPrimitive of Character.
-   *
-   * @param property name of the member.
-   * @param value the number value associated with the member.
-   */
-  public void addProperty(String property, Character value) {
-    add(property, createJsonElement(value));
-  }
-
-  /**
-   * Creates the proper {@link JsonElement} object from the given {@code value} object.
-   *
-   * @param value the object to generate the {@link JsonElement} for
-   * @return a {@link JsonPrimitive} if the {@code value} is not null, otherwise a {@link JsonNull}
-   */
-  private JsonElement createJsonElement(Object value) {
-    return value == null ? JsonNull.INSTANCE : new JsonPrimitive(value);
-  }
 
   /**
    * Returns a set of members of this object. The set is ordered, and the order is in which the
@@ -136,15 +73,6 @@ public final class JsonObject extends JsonElement {
     return members.entrySet();
   }
 
-  /**
-   * Returns a set of members key values.
-   *
-   * @return a set of member keys as Strings
-   * @since 2.8.1
-   */
-  public Set<String> keySet() {
-    return members.keySet();
-  }
 
   /**
    * Returns the number of key/value pairs in the object.
@@ -175,35 +103,7 @@ public final class JsonObject extends JsonElement {
     return members.get(memberName);
   }
 
-  /**
-   * Convenience method to get the specified member as a JsonPrimitive element.
-   *
-   * @param memberName name of the member being requested.
-   * @return the JsonPrimitive corresponding to the specified member.
-   */
-  public JsonPrimitive getAsJsonPrimitive(String memberName) {
-    return (JsonPrimitive) members.get(memberName);
-  }
 
-  /**
-   * Convenience method to get the specified member as a JsonArray.
-   *
-   * @param memberName name of the member being requested.
-   * @return the JsonArray corresponding to the specified member.
-   */
-  public JsonArray getAsJsonArray(String memberName) {
-    return (JsonArray) members.get(memberName);
-  }
-
-  /**
-   * Convenience method to get the specified member as a JsonObject.
-   *
-   * @param memberName name of the member being requested.
-   * @return the JsonObject corresponding to the specified member.
-   */
-  public JsonObject getAsJsonObject(String memberName) {
-    return (JsonObject) members.get(memberName);
-  }
 
   @Override
   public boolean equals(Object o) {

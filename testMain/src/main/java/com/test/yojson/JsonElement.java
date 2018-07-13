@@ -124,22 +124,6 @@ public abstract class JsonElement {
     throw new IllegalStateException("Not a JSON Primitive: " + this);
   }
 
-  /**
-   * convenience method to get this element as a {@link JsonNull}. If the element is of some
-   * other type, a {@link IllegalStateException} will result. Hence it is best to use this method
-   * after ensuring that this element is of the desired type by calling {@link #isJsonNull()}
-   * first.
-   *
-   * @return get this element as a {@link JsonNull}.
-   * @throws IllegalStateException if the element is of another type.
-   * @since 1.2
-   */
-  public JsonNull getAsJsonNull() {
-    if (isJsonNull()) {
-      return (JsonNull) this;
-    }
-    throw new IllegalStateException("Not a JSON Null: " + this);
-  }
 
   /**
    * convenience method to get this element as a boolean value.

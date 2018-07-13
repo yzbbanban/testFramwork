@@ -33,63 +33,6 @@ import java.io.*;
  * extend this class to customize the conversion. Here's an example of a type
  * adapter for an (X,Y) coordinate point: <pre>   {@code
  *
- *   public class PointAdapter extends TypeAdapter<Point> {
- *     public Point read(JsonReader reader) throws IOException {
- *       if (reader.peek() == JsonToken.NULL) {
- *         reader.nextNull();
- *         return null;
- *       }
- *       String xy = reader.nextString();
- *       String[] parts = xy.split(",");
- *       int x = Integer.parseInt(parts[0]);
- *       int y = Integer.parseInt(parts[1]);
- *       return new Point(x, y);
- *     }
- *     public void write(JsonWriter writer, Point value) throws IOException {
- *       if (value == null) {
- *         writer.nullValue();
- *         return;
- *       }
- *       String xy = value.getX() + "," + value.getY();
- *       writer.value(xy);
- *     }
- *   }}</pre>
- * With this type adapter installed, Gson will convert {@code Points} to JSON as
- * strings like {@code "5,8"} rather than objects like {@code {"x":5,"y":8}}. In
- * this case the type adapter binds a rich Java class to a compact JSON value.
- *
- * <p>The {@link #read(JsonReader) read()} method must read exactly one value
- * and {@link #write(JsonWriter,Object) write()} must write exactly one value.
- * For primitive types this is means readers should make exactly one call to
- * {@code nextBoolean()}, {@code nextDouble()}, {@code nextInt()}, {@code
- * nextLong()}, {@code nextString()} or {@code nextNull()}. Writers should make
- * exactly one call to one of <code>value()</code> or <code>nullValue()</code>.
- * For arrays, type adapters should start with a call to {@code beginArray()},
- * convert all elements, and finish with a call to {@code endArray()}. For
- * objects, they should start with {@code beginObject()}, convert the object,
- * and finish with {@code endObject()}. Failing to convert a value or converting
- * too many values may cause the application to crash.
- *
- * <p>Type adapters should be prepared to read null from the stream and write it
- * to the stream. Alternatively, they should use {@link #nullSafe()} method while
- * registering the type adapter with Gson. If your {@code Gson} instance
- * has been configured to {@link GsonBuilder#serializeNulls()}, these nulls will be
- * written to the final document. Otherwise the value (and the corresponding name
- * when writing to a JSON object) will be omitted automatically. In either case
- * your type adapter must handle null.
- *
- * <p>To use a custom type adapter with Gson, you must <i>register</i> it with a
- * {@link GsonBuilder}: <pre>   {@code
- *
- *   GsonBuilder builder = new GsonBuilder();
- *   builder.registerTypeAdapter(Point.class, new PointAdapter());
- *   // if PointAdapter didn't check for nulls in its read/write methods, you should instead use
- *   // builder.registerTypeAdapter(Point.class, new PointAdapter().nullSafe());
- *   ...
- *   Gson gson = builder.create();
- * }</pre>
- *
- * @since 2.1
  */
 // non-Javadoc:
 //
@@ -122,22 +65,6 @@ public abstract class TypeAdapter<T> {
    * @param value the Java object to write. May be null.
    */
   public abstract void write(JsonWriter out, T value) throws IOException;
-
-  /**
-   * Converts {@code value} to a JSON document and writes it to {@code out}.
-   * Unlike Gson's similar {@link Gson#toJson(JsonElement, Appendable) toJson}
-   * method, this write is strict. Create a {@link
-   * JsonWriter#setLenient(boolean) lenient} {@code JsonWriter} and call
-   * {@link #write(com.google.gson.stream.JsonWriter, Object)} for lenient
-   * writing.
-   *
-   * @param value the Java object to convert. May be null.
-   * @since 2.2
-   */
-  public final void toJson(Writer out, T value) throws IOException {
-    JsonWriter writer = new JsonWriter(out);
-    write(writer, value);
-  }
 
   /**
    * This wrapper method is used to make a type adapter null tolerant. In general, a
@@ -198,25 +125,6 @@ public abstract class TypeAdapter<T> {
     };
   }
 
-  /**
-   * Converts {@code value} to a JSON document. Unlike Gson's similar {@link
-   * Gson#toJson(Object) toJson} method, this write is strict. Create a {@link
-   * JsonWriter#setLenient(boolean) lenient} {@code JsonWriter} and call
-   * {@link #write(com.google.gson.stream.JsonWriter, Object)} for lenient
-   * writing.
-   *
-   * @param value the Java object to convert. May be null.
-   * @since 2.2
-   */
-  public final String toJson(T value) {
-    StringWriter stringWriter = new StringWriter();
-    try {
-      toJson(stringWriter, value);
-    } catch (IOException e) {
-      throw new AssertionError(e); // No I/O writing to a StringWriter.
-    }
-    return stringWriter.toString();
-  }
 
   /**
    * Converts {@code value} to a JSON tree.
@@ -243,45 +151,5 @@ public abstract class TypeAdapter<T> {
    */
   public abstract T read(JsonReader in) throws IOException;
 
-  /**
-   * Converts the JSON document in {@code in} to a Java object. Unlike Gson's
-   * similar {@link Gson#fromJson(Reader, Class) fromJson} method, this
-   * read is strict. Create a {@link JsonReader#setLenient(boolean) lenient}
-   * {@code JsonReader} and call {@link #read(JsonReader)} for lenient reading.
-   *
-   * @return the converted Java object. May be null.
-   * @since 2.2
-   */
-  public final T fromJson(Reader in) throws IOException {
-    JsonReader reader = new JsonReader(in);
-    return read(reader);
-  }
 
-  /**
-   * Converts the JSON document in {@code json} to a Java object. Unlike Gson's
-   * similar {@link Gson#fromJson(String, Class) fromJson} method, this read is
-   * strict. Create a {@link JsonReader#setLenient(boolean) lenient} {@code
-   * JsonReader} and call {@link #read(JsonReader)} for lenient reading.
-   *
-   * @return the converted Java object. May be null.
-   * @since 2.2
-   */
-  public final T fromJson(String json) throws IOException {
-    return fromJson(new StringReader(json));
-  }
-
-  /**
-   * Converts {@code jsonTree} to a Java object.
-   *
-   * @param jsonTree the Java object to convert. May be {@link JsonNull}.
-   * @since 2.2
-   */
-  public final T fromJsonTree(JsonElement jsonTree) {
-    try {
-      JsonReader jsonReader = new JsonTreeReader(jsonTree);
-      return read(jsonReader);
-    } catch (IOException e) {
-      throw new JsonIOException(e);
-    }
-  }
 }

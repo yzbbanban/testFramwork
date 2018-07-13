@@ -34,7 +34,6 @@ public final class Excluder implements TypeAdapterFactory, Cloneable {
   private double version = IGNORE_VERSIONS;
   private int modifiers = Modifier.TRANSIENT | Modifier.STATIC;
   private boolean serializeInnerClasses = true;
-  private boolean requireExpose;
   private List<ExclusionStrategy> serializationStrategies = Collections.emptyList();
   private List<ExclusionStrategy> deserializationStrategies = Collections.emptyList();
 
@@ -103,10 +102,6 @@ public final class Excluder implements TypeAdapterFactory, Cloneable {
 
     if (field.isSynthetic()) {
       return true;
-    }
-
-    if (requireExpose) {
-        return true;
     }
 
     if (!serializeInnerClasses && isInnerClass(field.getType())) {

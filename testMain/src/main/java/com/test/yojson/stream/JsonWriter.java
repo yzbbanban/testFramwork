@@ -196,24 +196,6 @@ public class JsonWriter implements Closeable, Flushable {
   }
 
   /**
-   * Sets the indentation string to be repeated for each level of indentation
-   * in the encoded document. If {@code indent.isEmpty()} the encoded document
-   * will be compact. Otherwise the encoded document will be more
-   * human-readable.
-   *
-   * @param indent a string containing only whitespace.
-   */
-  public final void setIndent(String indent) {
-    if (indent.length() == 0) {
-      this.indent = null;
-      this.separator = ":";
-    } else {
-      this.indent = indent;
-      this.separator = ": ";
-    }
-  }
-
-  /**
    * Configure this writer to relax its syntax rules. By default, this writer
    * only emits well-formed JSON as specified by <a
    * href="http://www.ietf.org/rfc/rfc7159.txt">RFC 7159</a>. Setting the writer
@@ -234,33 +216,6 @@ public class JsonWriter implements Closeable, Flushable {
    */
   public boolean isLenient() {
     return lenient;
-  }
-
-  /**
-   * Configure this writer to emit JSON that's safe for direct inclusion in HTML
-   * and XML documents. This escapes the HTML characters {@code <}, {@code >},
-   * {@code &} and {@code =} before writing them to the stream. Without this
-   * setting, your XML/HTML encoder should replace these characters with the
-   * corresponding escape sequences.
-   */
-  public final void setHtmlSafe(boolean htmlSafe) {
-    this.htmlSafe = htmlSafe;
-  }
-
-  /**
-   * Returns true if this writer writes JSON that's safe for inclusion in HTML
-   * and XML documents.
-   */
-  public final boolean isHtmlSafe() {
-    return htmlSafe;
-  }
-
-  /**
-   * Sets whether object members are serialized when their value is null.
-   * This has no impact on array elements. The default is true.
-   */
-  public final void setSerializeNulls(boolean serializeNulls) {
-    this.serializeNulls = serializeNulls;
   }
 
   /**
@@ -415,23 +370,6 @@ public class JsonWriter implements Closeable, Flushable {
   }
 
   /**
-   * Writes {@code value} directly to the writer without quoting or
-   * escaping.
-   *
-   * @param value the literal string value, or null to encode a null literal.
-   * @return this writer.
-   */
-  public JsonWriter jsonValue(String value) throws IOException {
-    if (value == null) {
-      return nullValue();
-    }
-    writeDeferredName();
-    beforeValue();
-    out.append(value);
-    return this;
-  }
-
-  /**
    * Encodes {@code null}.
    *
    * @return this writer.
@@ -533,7 +471,7 @@ public class JsonWriter implements Closeable, Flushable {
    * Ensures all buffered data is written to the underlying {@link Writer}
    * and flushes that writer.
    */
-  public void flush() throws IOException {
+  @Override public void flush() throws IOException {
     if (stackSize == 0) {
       throw new IllegalStateException("JsonWriter is closed.");
     }
@@ -545,7 +483,7 @@ public class JsonWriter implements Closeable, Flushable {
    *
    * @throws IOException if the JSON document is incomplete.
    */
-  public void close() throws IOException {
+  @Override public void close() throws IOException {
     out.close();
 
     int size = stackSize;

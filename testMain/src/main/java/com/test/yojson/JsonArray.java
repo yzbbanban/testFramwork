@@ -108,14 +108,6 @@ public final class JsonArray extends JsonElement implements Iterable<JsonElement
     elements.add(element);
   }
 
-  /**
-   * Adds all the elements of the specified array to self.
-   *
-   * @param array the array whose elements need to be added to the array.
-   */
-  public void addAll(JsonArray array) {
-    elements.addAll(array.elements);
-  }
 
   /**
    * Replaces the element at the specified position in this array with the specified element.
@@ -127,40 +119,6 @@ public final class JsonArray extends JsonElement implements Iterable<JsonElement
    */
   public JsonElement set(int index, JsonElement element) {
     return elements.set(index, element);
-  }
-
-  /**
-   * Removes the first occurrence of the specified element from this array, if it is present.
-   * If the array does not contain the element, it is unchanged.
-   * @param element element to be removed from this array, if present
-   * @return true if this array contained the specified element, false otherwise
-   * @since 2.3
-   */
-  public boolean remove(JsonElement element) {
-    return elements.remove(element);
-  }
-
-  /**
-   * Removes the element at the specified position in this array. Shifts any subsequent elements
-   * to the left (subtracts one from their indices). Returns the element that was removed from
-   * the array.
-   * @param index index the index of the element to be removed
-   * @return the element previously at the specified position
-   * @throws IndexOutOfBoundsException if the specified index is outside the array bounds
-   * @since 2.3
-   */
-  public JsonElement remove(int index) {
-    return elements.remove(index);
-  }
-
-  /**
-   * Returns true if this array contains the specified element.
-   * @return true if this array contains the specified element.
-   * @param element whose presence in this array is to be tested
-   * @since 2.3
-   */
-  public boolean contains(JsonElement element) {
-    return elements.contains(element);
   }
 
   /**
@@ -178,7 +136,7 @@ public final class JsonArray extends JsonElement implements Iterable<JsonElement
    *
    * @return an iterator to navigate the elements of the array.
    */
-  public Iterator<JsonElement> iterator() {
+  @Override public Iterator<JsonElement> iterator() {
     return elements.iterator();
   }
 

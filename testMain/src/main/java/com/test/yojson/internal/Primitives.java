@@ -72,16 +72,7 @@ public final class Primitives {
     return PRIMITIVE_TO_WRAPPER_TYPE.containsKey(type);
   }
 
-  /**
-   * Returns {@code true} if {@code type} is one of the nine
-   * primitive-wrapper types, such as {@link Integer}.
-   *
-   * @see Class#isPrimitive
-   */
-  public static boolean isWrapperType(Type type) {
-    return WRAPPER_TO_PRIMITIVE_TYPE.containsKey(
-        $Gson$Preconditions.checkNotNull(type));
-  }
+
 
   /**
    * Returns the corresponding wrapper type of {@code type} if it is a primitive
@@ -100,20 +91,4 @@ public final class Primitives {
     return (wrapped == null) ? type : wrapped;
   }
 
-  /**
-   * Returns the corresponding primitive type of {@code type} if it is a
-   * wrapper type; otherwise returns {@code type} itself. Idempotent.
-   * <pre>
-   *     unwrap(Integer.class) == int.class
-   *     unwrap(int.class) == int.class
-   *     unwrap(String.class) == String.class
-   * </pre>
-   */
-  public static <T> Class<T> unwrap(Class<T> type) {
-    // cast is safe: long.class and Long.class are both of type Class<Long>
-    @SuppressWarnings("unchecked")
-    Class<T> unwrapped = (Class<T>) WRAPPER_TO_PRIMITIVE_TYPE.get(
-        $Gson$Preconditions.checkNotNull(type));
-    return (unwrapped == null) ? type : unwrapped;
-  }
 }

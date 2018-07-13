@@ -12,8 +12,6 @@ import java.util.*;
  *
  * @see <a href="http://www.w3.org/TR/NOTE-datetime">this specification</a>
  */
-//Date parsing code from Jackson databind ISO8601Utils.java
-// https://github.com/FasterXML/jackson-databind/blob/master/src/main/java/com/fasterxml/jackson/databind/util/ISO8601Utils.java
 public class ISO8601Utils
 {
     /**

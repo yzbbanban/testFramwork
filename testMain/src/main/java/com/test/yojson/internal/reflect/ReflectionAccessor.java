@@ -21,7 +21,7 @@ import java.lang.reflect.AccessibleObject;
 
 /**
  * Provides a replacement for {@link AccessibleObject#setAccessible(boolean)}, which may be used to
- * avoid reflective access issues appeared in Java 9, like {@link java.lang.reflect.InaccessibleObjectException}
+ * avoid reflective access issues appeared in Java 9, like InaccessibleObjectException
  * thrown or warnings like
  * <pre>
  *   WARNING: An illegal reflective access operation has occurred
@@ -37,14 +37,14 @@ public abstract class ReflectionAccessor {
 
   /**
    * Does the same as {@code ao.setAccessible(true)}, but never throws
-   * {@link java.lang.reflect.InaccessibleObjectException}
+   * InaccessibleObjectException
    */
   public abstract void makeAccessible(AccessibleObject ao);
 
   /**
    * Obtains a {@link ReflectionAccessor} instance suitable for the current Java version.
    * <p>
-   * You may need one a reflective operation in your code throws {@link java.lang.reflect.InaccessibleObjectException}.
+   * You may need one a reflective operation in your code throws InaccessibleObjectException.
    * In such a case, use {@link ReflectionAccessor#makeAccessible(AccessibleObject)} on a field, method or constructor
    * (instead of basic {@link AccessibleObject#setAccessible(boolean)}).
    */
