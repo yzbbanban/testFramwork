@@ -176,7 +176,7 @@ public final class Gson {
     factories.add(new MapTypeAdapterFactory(constructorConstructor, complexMapKeySerialization));
     factories.add(TypeAdapters.ENUM_FACTORY);
     factories.add(new ReflectiveTypeAdapterFactory(
-        constructorConstructor, fieldNamingStrategy, excluder, null));
+        constructorConstructor, fieldNamingStrategy, excluder));
 
     this.factories = Collections.unmodifiableList(factories);
   }

@@ -36,16 +36,14 @@ public final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
     private final ConstructorConstructor constructorConstructor;
     private final FieldNamingStrategy fieldNamingPolicy;
     private final Excluder excluder;
-    private final JsonAdapterAnnotationTypeAdapterFactory jsonAdapterFactory;
     private final ReflectionAccessor accessor = ReflectionAccessor.getInstance();
 
     public ReflectiveTypeAdapterFactory(ConstructorConstructor constructorConstructor,
-                                        FieldNamingStrategy fieldNamingPolicy, Excluder excluder,
-                                        JsonAdapterAnnotationTypeAdapterFactory jsonAdapterFactory) {
+                                        FieldNamingStrategy fieldNamingPolicy, Excluder excluder
+                                        ) {
         this.constructorConstructor = constructorConstructor;
         this.fieldNamingPolicy = fieldNamingPolicy;
         this.excluder = excluder;
-        this.jsonAdapterFactory = jsonAdapterFactory;
     }
 
     public boolean excludeField(Field f, boolean serialize) {
