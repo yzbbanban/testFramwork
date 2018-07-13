@@ -256,15 +256,7 @@ public final class Gson {
     this.factories = Collections.unmodifiableList(factories);
   }
 
-  /**
-   * Returns a new GsonBuilder containing all custom factories and configuration used by the current
-   * instance.
-   *
-   * @return a GsonBuilder instance.
-   */
-  public GsonBuilder newBuilder() {
-    return new GsonBuilder(this);
-  }
+
 
   public Excluder excluder() {
     return excluder;

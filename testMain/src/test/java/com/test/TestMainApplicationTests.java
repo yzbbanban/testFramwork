@@ -24,7 +24,6 @@ public class TestMainApplicationTests {
         User user = gson.fromJson(json, User.class);
         System.out.println("==================> user: " + user);
 
-
     }
 
 }

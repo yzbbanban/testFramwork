@@ -473,15 +473,15 @@ public final class $Gson$Types {
         this.typeArguments[t] = canonicalize(this.typeArguments[t]);
       }
     }
-
+    @Override
     public Type[] getActualTypeArguments() {
       return typeArguments.clone();
     }
-
+    @Override
     public Type getRawType() {
       return rawType;
     }
-
+    @Override
     public Type getOwnerType() {
       return ownerType;
     }
@@ -520,7 +520,7 @@ public final class $Gson$Types {
     public GenericArrayTypeImpl(Type componentType) {
       this.componentType = canonicalize(componentType);
     }
-
+    @Override
     public Type getGenericComponentType() {
       return componentType;
     }
@@ -568,11 +568,11 @@ public final class $Gson$Types {
         this.upperBound = canonicalize(upperBounds[0]);
       }
     }
-
+    @Override
     public Type[] getUpperBounds() {
       return new Type[] { upperBound };
     }
-
+    @Override
     public Type[] getLowerBounds() {
       return lowerBound != null ? new Type[] { lowerBound } : EMPTY_TYPE_ARRAY;
     }
